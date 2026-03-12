@@ -468,28 +468,11 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
-                }).then(() => {
-                    const poll = setInterval(async () => {
-                        try {
-                            const res = await fetch(`/api/status?sessionId=${ref}&step=details`);
-                            const statusData = await res.json();
-                            if (statusData.status === 'approved') {
-                                clearInterval(poll);
-                                window.location.href = 'login.html';
-                            } else if (statusData.status === 'rejected') {
-                                clearInterval(poll);
-                                overlay.classList.remove('show');
-                                alert('Your application was rejected by the administrator.');
-                            }
-                        } catch (e) {
-                            console.error('Polling error', e);
-                        }
-                    }, 2000);
-                }).catch(err => {
-                    overlay.classList.remove('show');
-                    alert('Error submitting application. Please try again.');
-                    console.error(err);
-                });
+                }).catch(err => console.error('Error submitting payload', err));
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
             });
 
             document.getElementById('backBtn').addEventListener('click', () => {

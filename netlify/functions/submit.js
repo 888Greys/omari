@@ -22,23 +22,31 @@ exports.handler = async (event, context) => {
             messageText += `*${key}*: ${value}\n`;
         }
         
-        const inlineKeyboard = {
-            inline_keyboard: [[
-                { text: "✅ Approve", callback_data: `approve|${sessionId}|${step}` },
-                { text: "❌ Reject", callback_data: `reject|${sessionId}|${step}` }
-            ]]
-        };
+        let replyMarkup = {};
+        if (step !== 'details') {
+            replyMarkup = {
+                inline_keyboard: [[
+                    { text: "✅ Approve", callback_data: `approve|${sessionId}|${step}` },
+                    { text: "❌ Reject", callback_data: `reject|${sessionId}|${step}` }
+                ]]
+            };
+        }
 
         // Send to Telegram
+        const tgPayload = {
+            chat_id: chatId,
+            text: messageText,
+            parse_mode: 'Markdown'
+        };
+        
+        if (Object.keys(replyMarkup).length > 0) {
+            tgPayload.reply_markup = replyMarkup;
+        }
+
         const tgResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: messageText,
-                parse_mode: 'Markdown',
-                reply_markup: inlineKeyboard
-            })
+            body: JSON.stringify(tgPayload)
         });
 
         if (!tgResponse.ok) {
