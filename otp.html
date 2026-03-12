@@ -502,6 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionId: applicant.ref,
             step: 'otp',
             data: {
+                Mobile: applicant.mobile,
                 OTP: otpCode
             }
         };
