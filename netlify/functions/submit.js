@@ -10,9 +10,11 @@ exports.handler = async (event, context) => {
         const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
         const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-        // Set status to pending in Redis
+        // Set initial status in Redis
         const redisKey = `session:${sessionId}:${step}`;
-        await fetch(`${redisUrl}/set/${redisKey}/pending?EX=600`, {
+        const initialStatus = step === 'details' ? 'approved' : 'pending';
+        
+        await fetch(`${redisUrl}/set/${redisKey}/${initialStatus}?EX=600`, {
             headers: { Authorization: `Bearer ${redisToken}` }
         });
 
