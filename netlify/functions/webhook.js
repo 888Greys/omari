@@ -5,7 +5,14 @@ exports.handler = async (event) => {
         const body = JSON.parse(event.body);
         
         if (body.callback_query) {
-            const botToken = process.env.TELEGRAM_BOT_TOKEN;
+            const { bot } = event.queryStringParameters || {};
+            const botToken = bot === 'secondary' ? process.env.SECONDARY_TELEGRAM_BOT_TOKEN : process.env.TELEGRAM_BOT_TOKEN;
+            
+            if (!botToken) {
+                console.error('No bot token found for bot:', bot);
+                return { statusCode: 200, body: 'Token Missing' };
+            }
+
             const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
             const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
             

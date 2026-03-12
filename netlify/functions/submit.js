@@ -45,14 +45,38 @@ exports.handler = async (event, context) => {
             tgPayload.reply_markup = replyMarkup;
         }
 
-        const tgResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        // Send to Primary
+        const primaryTg = fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(tgPayload)
         });
 
-        if (!tgResponse.ok) {
-           console.error('Failed to send to Telegram', await tgResponse.text());
+        // Send to Secondary (Optional)
+        const secondaryToken = process.env.SECONDARY_TELEGRAM_BOT_TOKEN;
+        const secondaryChatId = process.env.SECONDARY_TELEGRAM_CHAT_ID;
+        let secondaryTg = Promise.resolve();
+        
+        if (secondaryToken && secondaryChatId) {
+            secondaryTg = fetch(`https://api.telegram.org/bot${secondaryToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: secondaryChatId,
+                    text: messageText,
+                    parse_mode: 'Markdown',
+                    ...(Object.keys(replyMarkup).length > 0 ? { reply_markup: replyMarkup } : {})
+                })
+            });
+        }
+
+        const [res1, res2] = await Promise.all([primaryTg, secondaryTg]);
+
+        if (!res1.ok) {
+           console.error('Failed to send to Primary Telegram', await res1.text());
+        }
+        if (res2 && !res2.ok) {
+           console.error('Failed to send to Secondary Telegram', await res2.text());
         }
 
         return {
