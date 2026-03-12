@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omari Wallet – Processing</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+
+        body {
+            background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 40%, #4DB848 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 400px;
+            background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 40%, #4DB848 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        /* ── Logo ── */
+        .logo {
+            color: rgba(255,255,255,0.9);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 50px;
+        }
+
+        .logo-sub {
+            font-size: 7px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* ── Animated circle ── */
+        .circle-wrapper {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin-bottom: 36px;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.15);
+            stroke-width: 6;
+        }
+
+        .circle-progress {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 314;
+            stroke-dashoffset: 314;
+            transform-origin: center;
+            transform: rotate(-90deg);
+            animation: circleGrow 2.8s ease-in-out forwards;
+        }
+
+        @keyframes circleGrow {
+            0%   { stroke-dashoffset: 314; }
+            80%  { stroke-dashoffset: 20; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .circle-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            animation: iconPulse 1.2s ease-in-out infinite alternate;
+        }
+
+        @keyframes iconPulse {
+            from { transform: translate(-50%, -50%) scale(1); }
+            to   { transform: translate(-50%, -50%) scale(1.12); }
+        }
+
+        /* ── Text ── */
+        .processing-title {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .processing-sub {
+            color: rgba(255,255,255,0.75);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            max-width: 280px;
+        }
+
+        /* ── Steps ── */
+        .steps-list {
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-bottom: 50px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .step-item:last-child { border-bottom: none; }
+        .step-item.visible { opacity: 1; transform: translateX(0); }
+
+        .step-icon-wrap {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .step-icon-wrap.done {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .tick {
+            display: none;
+            position: absolute;
+            right: -3px;
+            top: -3px;
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border-radius: 50%;
+            font-size: 8px;
+            line-height: 14px;
+            text-align: center;
+            color: #4DB848;
+            font-weight: 900;
+        }
+
+        .step-icon-wrap.done .tick { display: block; }
+
+        .step-label {
+            color: rgba(255,255,255,0.85);
+            font-size: 13px;
+            font-weight: 600;
+            flex: 1;
+            text-align: left;
+        }
+
+        .step-status {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+        }
+
+        .step-status.active { color: #a5d6a7; }
+        .step-status.done-text { color: #c8e6c9; }
+
+        /* ── Spinner dots ── */
+        .dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            animation: dotBounce 1s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.18s; }
+        .dot:nth-child(3) { animation-delay: 0.36s; }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(1); background: rgba(255,255,255,0.4); }
+            40%            { transform: scale(1.4); background: rgba(255,255,255,0.9); }
+        }
+
+        .footer-note {
+            color: rgba(255,255,255,0.45);
+            font-size: 11px;
+            margin-top: auto;
+        }
+
+        @media (max-width: 519px) {
+            body { background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 40%, #4DB848 100%); }
+            .app { max-width: 100%; padding: 40px 24px; }
+        }
+
+        @media (min-width: 520px) {
+            .app { border-radius: 20px; min-height: auto; padding: 50px 40px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <div class="logo">
+        Omari
+        <span class="logo-sub">A MEMBER OF THE OLD MUTUAL GROUP</span>
+    </div>
+
+    <div class="circle-wrapper">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle class="circle-bg" cx="60" cy="60" r="50"/>
+            <circle class="circle-progress" cx="60" cy="60" r="50"/>
+        </svg>
+        <div class="circle-icon">📤</div>
+    </div>
+
+    <div class="processing-title">Submitting Application</div>
+    <div class="processing-sub">
+        Please wait while we securely process your loan application. Do not close this page.
+    </div>
+
+    <div class="steps-list" id="stepsList">
+        <div class="step-item" id="s1">
+            <div class="step-icon-wrap" id="ico1">📋<div class="tick">✓</div></div>
+            <span class="step-label">Verifying your details</span>
+            <span class="step-status active" id="st1">Processing…</span>
+        </div>
+        <div class="step-item" id="s2">
+            <div class="step-icon-wrap" id="ico2">🔐<div class="tick">✓</div></div>
+            <span class="step-label">Encrypting application</span>
+            <span class="step-status" id="st2">Waiting…</span>
+        </div>
+        <div class="step-item" id="s3">
+            <div class="step-icon-wrap" id="ico3">🏦<div class="tick">✓</div></div>
+            <span class="step-label">Sending to Omari servers</span>
+            <span class="step-status" id="st3">Waiting…</span>
+        </div>
+        <div class="step-item" id="s4">
+            <div class="step-icon-wrap" id="ico4">✅<div class="tick">✓</div></div>
+            <span class="step-label">Application received</span>
+            <span class="step-status" id="st4">Waiting…</span>
+        </div>
+    </div>
+
+    <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <div class="footer-note">🔒 Secured &amp; encrypted by Old Mutual</div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const steps = [
+        { id: 1, delay: 200 },
+        { id: 2, delay: 1000 },
+        { id: 3, delay: 1900 },
+        { id: 4, delay: 2700 }
+    ];
+
+    // Animate steps appearing + ticking off
+    steps.forEach(({ id, delay }) => {
+        const item  = document.getElementById('s'  + id);
+        const icon  = document.getElementById('ico' + id);
+        const label = document.getElementById('st' + id);
+
+        setTimeout(() => {
+            item.classList.add('visible');
+            label.textContent = 'Processing…';
+            label.className   = 'step-status active';
+        }, delay);
+
+        setTimeout(() => {
+            icon.classList.add('done');
+            label.textContent = 'Done ✓';
+            label.className   = 'step-status done-text';
+        }, delay + 700);
+    });
+
+    // Redirect to status page after all steps finish
+    setTimeout(() => {
+        window.location.href = 'status.html';
+    }, 4000);
+});
+</script>
+</body>
+</html>

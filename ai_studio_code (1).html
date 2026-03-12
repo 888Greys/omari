@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omari Wallet PIN Entry</title>
+    <style>
+        /* Base Reset */
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Mobile Container Simulation */
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Top Logo Area */
+        .top-header {
+            text-align: center;
+            padding: 15px 0 10px;
+            background: #ffffff;
+            z-index: 20;
+        }
+
+        .logo-text {
+            color: #4DB848;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 2px;
+        }
+
+        .logo-subtext {
+            font-size: 7px;
+            color: #555;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hero Image Section */
+        .hero-section {
+            height: 250px;
+            background-image: 
+                linear-gradient(90deg, rgba(20, 25, 30, 0.95) 0%, rgba(20, 25, 30, 0.7) 45%, rgba(20, 25, 30, 0) 100%),
+                url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');
+            background-size: cover;
+            background-position: center 20%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 25px;
+        }
+
+        .hero-section p {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 300;
+            margin-bottom: 4px;
+        }
+
+        .hero-section h1 {
+            color: #51C24D;
+            font-size: 28px;
+            line-height: 1.25;
+            font-weight: 700;
+        }
+
+        /* Overlapping White Card */
+        .login-card {
+            background-color: #ffffff;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            margin: -30px 20px 20px 20px;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .instruction-text {
+            color: #777777;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        /* Readonly Phone Number Display */
+        .readonly-phone-box {
+            background-color: #f2f2f2;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* PIN Input Area */
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .pin-box {
+            width: 55px;
+            height: 65px;
+            border: 1px solid #4DB848;
+            border-radius: 8px;
+            font-size: 32px;
+            text-align: center;
+            font-weight: bold;
+            color: #111;
+            background: #fff;
+            outline: none;
+            /* Magenta caret to match the screenshot exactly */
+            caret-color: #b90076; 
+            transition: box-shadow 0.2s;
+        }
+
+        .pin-box:focus {
+            box-shadow: 0 0 0 2px rgba(77, 184, 72, 0.2);
+        }
+
+        /* Override default password dot size for iOS/Webkit if needed */
+        .pin-box[type="password"] {
+            letter-spacing: 0;
+        }
+
+        /* Buttons & Links */
+        .btn-login {
+            width: 100%;
+            height: 50px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #4DB848;
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 12px rgba(77, 184, 72, 0.35);
+            margin-bottom: 25px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-login:active {
+            opacity: 0.8;
+        }
+
+        .change-number-link {
+            text-align: center;
+            color: #b90076;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        .app-version {
+            color: #aaaaaa;
+            font-size: 11px;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        /* Desktop specific tweaks */
+        @media (min-width: 401px) {
+            .app-container {
+                min-height: auto;
+                height: 800px;
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Top Logo area -->
+        <div class="top-header">
+            <h1 class="logo-text">Omari</h1>
+            <div class="logo-subtext">A MEMBER OF THE OLD MUTUAL GROUP</div>
+        </div>
+
+        <!-- Hero / Background Image Area -->
+        <div class="hero-section">
+            <p>Please enter your</p>
+            <h1>Omari Wallet<br>login details</h1>
+        </div>
+
+        <!-- Main Login Card -->
+        <div class="login-card">
+            <div class="instruction-text">Wallet Mobile Number</div>
+            
+            <div class="readonly-phone-box">
+                <!-- Simulating the redacted number from your screenshot -->
+                26377*******
+            </div>
+
+            <div class="instruction-text">Enter your 4 digit Wallet PIN</div>
+
+            <div class="pin-container">
+                <input type="password" maxlength="1" class="pin-box" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-box" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-box" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-box" inputmode="numeric">
+            </div>
+
+            <button class="btn-login" id="loginBtn">Login</button>
+
+            <button class="change-number-link" id="changeNumberBtn">Change Mobile Number</button>
+
+            <div class="app-version">v5.0.40</div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pinInputs = document.querySelectorAll('.pin-box');
+            const loginBtn = document.getElementById('loginBtn');
+            const changeNumberBtn = document.getElementById('changeNumberBtn');
+
+            // Setup PIN input logic (auto-advance & backspace)
+            pinInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    // Restrict to single character just in case
+                    if(input.value.length > 1) {
+                        input.value = input.value.slice(0, 1); 
+                    }
+                    
+                    // Move to next input if filled
+                    if(input.value !== '' && index < pinInputs.length - 1) {
+                        pinInputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    // Move to previous input on backspace if current is empty
+                    if(e.key === 'Backspace' && input.value === '' && index > 0) {
+                        pinInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // --- SCREENSHOT SIMULATION ---
+            // Pre-fill the first 3 dots and focus the 4th so it perfectly matches your image.
+            setTimeout(() => {
+                pinInputs[0].value = '1';
+                pinInputs[1].value = '1';
+                pinInputs[2].value = '1';
+                pinInputs[3].focus();
+            }, 300);
+
+            // Button click handlers
+            loginBtn.addEventListener('click', () => {
+                const pin = Array.from(pinInputs).map(i => i.value).join('');
+                if (pin.length === 4) {
+                    alert(`Logging in with PIN: ${pin}`);
+                } else {
+                    alert('Please enter your full 4-digit PIN.');
+                }
+            });
+
+            changeNumberBtn.addEventListener('click', () => {
+                alert('Navigating back to phone number entry...');
+            });
+        });
+    </script>
+</body>
+</html>

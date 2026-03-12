@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omari Wallet – Loan Status</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+
+        body {
+            background: #f0f4f0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* ── Header band ── */
+        .header-band {
+            background: linear-gradient(135deg, #1b5e20 0%, #4DB848 100%);
+            padding: 30px 20px 50px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo { color: #fff; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-sub { font-size: 7px; color: rgba(255,255,255,0.7); letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0; }
+
+        /* ── Status circle (overlaps header) ── */
+        .status-circle-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: -40px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .status-circle {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.4); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
+        }
+
+        /* ── Body ── */
+        .body {
+            flex: 1;
+            padding: 0 16px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .status-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1b5e20;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .status-subtitle {
+            font-size: 14px;
+            color: #777;
+            text-align: center;
+            margin-bottom: 24px;
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        /* ── Reference card ── */
+        .ref-card {
+            width: 100%;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border: 1.5px solid #c8e6c9;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ref-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(77,184,72,0.1);
+            border-radius: 50%;
+        }
+
+        .ref-label {
+            font-size: 11px;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        .ref-number {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1b5e20;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .ref-copy {
+            font-size: 11px;
+            color: #4DB848;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ── Status badge ── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff8e1;
+            border: 1.5px solid #ffe082;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #f57c00;
+            margin-bottom: 22px;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #f57c00;
+            animation: blink 1.2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.2; }
+        }
+
+        /* ── Info rows ── */
+        .info-card {
+            width: 100%;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 16px;
+            border-bottom: 1px solid #f2f2f2;
+        }
+
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-size: 12px; color: #888; }
+        .info-value { font-size: 13px; font-weight: 700; color: #222; }
+        .info-value.green { color: #4DB848; }
+
+        /* ── Timeline ── */
+        .timeline-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            align-self: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .timeline {
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .tl-item {
+            display: flex;
+            gap: 14px;
+            cursor: default;
+        }
+
+        .tl-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 28px;
+            flex-shrink: 0;
+        }
+
+        .tl-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .tl-dot.done  { background: #e8f5e9; color: #4DB848; border: 2px solid #4DB848; }
+        .tl-dot.now   { background: #fff8e1; color: #f57c00; border: 2px solid #f57c00; }
+        .tl-dot.future{ background: #f5f5f5; color: #bbb;    border: 2px dashed #ddd; }
+
+        .tl-line {
+            flex: 1;
+            width: 2px;
+            background: #e0e0e0;
+            margin: 4px 0;
+            min-height: 24px;
+        }
+
+        .tl-content { flex: 1; padding-bottom: 22px; }
+        .tl-heading  { font-size: 13px; font-weight: 700; color: #222; margin-bottom: 3px; }
+        .tl-sub      { font-size: 11px; color: #999; }
+
+        /* ── What's next box ── */
+        .info-tip {
+            width: 100%;
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .info-tip .tip-icon { font-size: 20px; flex-shrink: 0; }
+        .info-tip .tip-text { font-size: 12px; color: #2e7d32; line-height: 1.7; }
+
+        /* ── Buttons ── */
+        .btn-home {
+            width: 100%;
+            height: 52px;
+            background: linear-gradient(135deg, #4DB848, #1b5e20);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 26px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(77,184,72,0.35);
+            margin-bottom: 12px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-home:active { opacity: 0.85; }
+
+        .btn-share {
+            width: 100%;
+            height: 46px;
+            background: transparent;
+            color: #4DB848;
+            font-size: 14px;
+            font-weight: 700;
+            border: 2px solid #4DB848;
+            border-radius: 23px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 519px) {
+            body { background: #fff; }
+            .app { box-shadow: none; max-width: 100%; }
+        }
+
+        @media (min-width: 520px) {
+            body { align-items: center; padding: 20px 0; }
+            .app { min-height: auto; border-radius: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <div class="header-band">
+        <div class="logo">Omari</div>
+        <div class="logo-sub">A MEMBER OF THE OLD MUTUAL GROUP</div>
+    </div>
+
+    <div class="status-circle-wrap">
+        <div class="status-circle">⏳</div>
+    </div>
+
+    <div class="body">
+        <div class="status-title">Application Received!</div>
+        <div class="status-subtitle">Your loan is now awaiting approval by our team. We'll notify you via SMS soon.</div>
+
+        <div class="ref-card">
+            <div class="ref-label">Application Reference</div>
+            <div class="ref-number" id="refNumber">OMR-——</div>
+            <div class="ref-copy" id="copyRef" onclick="copyRef()">📋 Tap to copy</div>
+        </div>
+
+        <div class="badge">
+            <div class="badge-dot"></div>
+            AWAITING APPROVAL
+        </div>
+
+        <div class="info-card">
+            <div class="info-row"><span class="info-label">Amount Applied</span><span class="info-value green" id="loanAmount">—</span></div>
+            <div class="info-row"><span class="info-label">Loan Term</span><span class="info-value" id="loanTerm">—</span></div>
+            <div class="info-row"><span class="info-label">Total Repayable</span><span class="info-value" id="loanRepay">—</span></div>
+            <div class="info-row"><span class="info-label">Applicant</span><span class="info-value" id="applicantName">—</span></div>
+            <div class="info-row"><span class="info-label">Submitted</span><span class="info-value" id="submitTime">—</span></div>
+        </div>
+
+        <div class="timeline-title">Application Journey</div>
+
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="tl-left">
+                    <div class="tl-dot done">✓</div>
+                    <div class="tl-line"></div>
+                </div>
+                <div class="tl-content">
+                    <div class="tl-heading">Application Submitted</div>
+                    <div class="tl-sub" id="tlTime">Just now</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-left">
+                    <div class="tl-dot now">🔍</div>
+                    <div class="tl-line"></div>
+                </div>
+                <div class="tl-content">
+                    <div class="tl-heading">Under Review</div>
+                    <div class="tl-sub">In progress — usually within 1 hour</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-left">
+                    <div class="tl-dot future">💰</div>
+                    <div class="tl-line"></div>
+                </div>
+                <div class="tl-content">
+                    <div class="tl-heading">Decision &amp; Disbursement</div>
+                    <div class="tl-sub">Within 24 hours — SMS notification</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-left">
+                    <div class="tl-dot future">📅</div>
+                </div>
+                <div class="tl-content">
+                    <div class="tl-heading">Repayment Due</div>
+                    <div class="tl-sub" id="tlDueDate">On your agreed due date</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-tip">
+            <span class="tip-icon">📱</span>
+            <span class="tip-text">You will receive an SMS on your registered number once a decision has been made. Approved funds are disbursed directly to your <strong>Omari Wallet</strong> instantly.</span>
+        </div>
+
+        <button class="btn-home" id="homeBtn">Done — Back to Home</button>
+        <button class="btn-share" id="shareBtn">📤 Share Reference</button>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const loan       = JSON.parse(localStorage.getItem('omariLoan') || 'null');
+    const applicant  = JSON.parse(localStorage.getItem('omariSubmittedLoan') || 'null');
+
+    // Generate reference
+    const ref = applicant && applicant.ref
+        ? applicant.ref
+        : 'OMR-' + Date.now().toString(36).toUpperCase().slice(-6);
+    document.getElementById('refNumber').textContent = ref;
+
+    if (loan) {
+        document.getElementById('loanAmount').textContent = '$' + parseFloat(loan.amount).toFixed(2);
+        document.getElementById('loanTerm').textContent   = loan.term + ' Days';
+        document.getElementById('loanRepay').textContent  = '$' + parseFloat(loan.repay).toFixed(2);
+    }
+
+    if (applicant) {
+        document.getElementById('applicantName').textContent = applicant.name || '—';
+    }
+
+    const now = new Date();
+    document.getElementById('submitTime').textContent = now.toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' }) + ' · ' + now.toLocaleDateString('en-ZW');
+    document.getElementById('tlTime').textContent     = now.toLocaleTimeString('en-ZW', { hour: '2-digit', minute: '2-digit' });
+
+    if (loan && loan.term) {
+        const due = new Date(now.getTime() + parseInt(loan.term) * 24 * 60 * 60 * 1000);
+        document.getElementById('tlDueDate').textContent = due.toLocaleDateString('en-ZW', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    document.getElementById('homeBtn').addEventListener('click', () => {
+        localStorage.removeItem('omariLoan');
+        localStorage.removeItem('omariSubmittedLoan');
+        window.location.href = 'splash.html';
+    });
+
+    document.getElementById('shareBtn').addEventListener('click', () => {
+        const text = 'My Omari Loan Reference: ' + ref + '\nStatus: Awaiting Approval\nAmount: $' + (loan ? loan.amount : '—');
+        if (navigator.share) {
+            navigator.share({ title: 'Omari Loan Application', text });
+        } else {
+            navigator.clipboard.writeText(text).then(() => alert('Reference copied!')).catch(() => alert(text));
+        }
+    });
+});
+
+function copyRef() {
+    const ref = document.getElementById('refNumber').textContent;
+    navigator.clipboard.writeText(ref)
+        .then(() => {
+            const el = document.getElementById('copyRef');
+            el.textContent = '✅ Copied!';
+            setTimeout(() => el.textContent = '📋 Tap to copy', 2000);
+        })
+        .catch(() => alert(ref));
+}
+</script>
+</body>
+</html>

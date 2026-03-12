@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omari Loans — Step 1: Setup</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: linear-gradient(160deg, #e8f5e9 0%, #e3f0e4 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 400px;
+            min-height: 100vh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.14);
+        }
+
+        /* ── HEADER ── */
+        .header {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 40%, #4DB848 100%);
+            padding: 22px 20px 80px;
+            color: #fff;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: #fff;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 22px;
+        }
+
+        .logo { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-sub { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0.78; margin-top: 3px; }
+
+        .step-pill {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.30);
+            border-radius: 20px;
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .header h1 { font-size: 26px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
+        .header p  { font-size: 13px; line-height: 1.6; opacity: 0.84; max-width: 290px; }
+
+        /* ── CARD ── */
+        .card {
+            flex: 1;
+            padding: 8px 18px 24px;
+        }
+
+        .section { margin-bottom: 24px; }
+
+        .sec-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #424242;
+            margin-bottom: 12px;
+        }
+
+        /* Amount display */
+        .amount-display { text-align: center; margin-bottom: 14px; }
+        .amount-big { font-size: 48px; font-weight: 800; color: #2e7d32; letter-spacing: -2px; line-height: 1; }
+        .amount-label { font-size: 12px; color: #9e9e9e; margin-top: 4px; }
+
+        input[type="range"] {
+            width: 100%;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #e0e0e0;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #4DB848;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 10px rgba(77,184,72,0.45);
+            cursor: pointer;
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #bdbdbd;
+            margin-top: 7px;
+        }
+
+        /* Term chips */
+        .chips {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .chip {
+            padding: 13px 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            background: #fff;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #616161;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .chip .sub { font-size: 11px; font-weight: 500; color: #bdbdbd; margin-top: 3px; }
+        .chip.active { border-color: #4DB848; background: #f1fbf1; color: #1b5e20; }
+        .chip.active .sub { color: #4DB848; }
+
+        /* Purpose grid */
+        .purpose-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .purpose-btn {
+            border: 2px solid #e8e8e8;
+            border-radius: 16px;
+            padding: 14px 12px;
+            background: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .purpose-btn:hover { border-color: #c8e6c9; }
+        .purpose-btn.active { border-color: #4DB848; background: #f2fbf2; }
+
+        .p-icon  { font-size: 24px; margin-bottom: 8px; }
+        .p-name  { font-size: 13px; font-weight: 700; color: #333; }
+        .p-desc  { font-size: 11px; color: #9e9e9e; margin-top: 3px; line-height: 1.4; }
+        .purpose-btn.active .p-name { color: #1b5e20; }
+
+        /* Repayment preview */
+        .repay-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f1fbf1, #fafff8);
+            border: 1px solid #c8e6c9;
+            border-radius: 16px;
+            padding: 16px 18px;
+        }
+
+        .repay-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #757575; }
+        .repay-value { font-size: 30px; font-weight: 800; color: #1b5e20; margin-top: 4px; }
+        .repay-note  { font-size: 12px; color: #9e9e9e; text-align: right; max-width: 120px; line-height: 1.45; }
+
+        /* Actions */
+        .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+
+        .btn {
+            width: 100%;
+            height: 52px;
+            border-radius: 26px;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:active { opacity: 0.78; }
+        .btn-primary { background: #4DB848; color: #fff; box-shadow: 0 6px 18px rgba(77,184,72,0.38); }
+        .btn-ghost   { background: transparent; color: #9e9e9e; border: 1px solid #e0e0e0; font-size: 14px; }
+
+        .footer-note {
+            margin-top: 14px;
+            font-size: 12px;
+            color: #bdbdbd;
+            text-align: center;
+            line-height: 1.55;
+        }
+
+        /* Truly full-screen on real phones — no edge gaps */
+        html, body { overflow-x: hidden; }
+
+        @media (max-width: 519px) {
+            body { background: #fff; }
+            .app { box-shadow: none; max-width: 100%; }
+        }
+
+        /* Centered card on tablets & desktop */
+        @media (min-width: 520px) {
+            body { align-items: center; padding: 24px; }
+            .app { min-height: auto; max-width: 460px; border-radius: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+
+        <div class="header">
+            <div class="header-top">
+                <div>
+                    <div class="logo">Omari</div>
+                    <div class="logo-sub">A member of Old Mutual Group</div>
+                </div>
+                <div class="step-pill">Step 1 of 2</div>
+            </div>
+            <h1>Set up your loan</h1>
+            <p>Choose how much you need, when you'll repay it, and what it's for.</p>
+        </div>
+
+        <div class="card">
+
+            <!-- Amount -->
+            <div class="section">
+                <div class="sec-title">How much do you need?</div>
+                <div class="amount-display">
+                    <div class="amount-big" id="amountDisplay">$500</div>
+                    <div class="amount-label">Loan principal</div>
+                </div>
+                <input type="range" id="amountSlider" min="100" max="2000" step="50" value="500">
+                <div class="range-labels"><span>$100</span><span>$2,000</span></div>
+            </div>
+
+            <!-- Term -->
+            <div class="section">
+                <div class="sec-title">Repayment period</div>
+                <div class="chips" id="termChips">
+                    <button class="chip active" type="button" data-term="30" data-fee="0.13">
+                        30 days<div class="sub">13% fee</div>
+                    </button>
+                    <button class="chip" type="button" data-term="60" data-fee="0.18">
+                        60 days<div class="sub">18% fee</div>
+                    </button>
+                    <button class="chip" type="button" data-term="90" data-fee="0.24">
+                        90 days<div class="sub">24% fee</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Purpose -->
+            <div class="section">
+                <div class="sec-title">What is this loan for?</div>
+                <div class="purpose-grid" id="purposeGrid">
+                    <button class="purpose-btn active" type="button" data-purpose="Business">
+                        <div class="p-icon">🏪</div>
+                        <div class="p-name">Business</div>
+                        <div class="p-desc">Stock, operations &amp; growth</div>
+                    </button>
+                    <button class="purpose-btn" type="button" data-purpose="School Fees">
+                        <div class="p-icon">🎓</div>
+                        <div class="p-name">School Fees</div>
+                        <div class="p-desc">Tuition &amp; school needs</div>
+                    </button>
+                    <button class="purpose-btn" type="button" data-purpose="Emergency">
+                        <div class="p-icon">🏥</div>
+                        <div class="p-name">Emergency</div>
+                        <div class="p-desc">Medical &amp; urgent costs</div>
+                    </button>
+                    <button class="purpose-btn" type="button" data-purpose="Bills & Rent">
+                        <div class="p-icon">🏠</div>
+                        <div class="p-name">Bills &amp; Rent</div>
+                        <div class="p-desc">Utilities &amp; living costs</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Repayment preview -->
+            <div class="repay-box">
+                <div>
+                    <div class="repay-label">Total to repay</div>
+                    <div class="repay-value" id="repayDisplay">$565</div>
+                </div>
+                <div class="repay-note" id="repayNote">13% service fee · 30 day plan</div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" id="continueBtn" type="button">Continue to my details →</button>
+                <button class="btn btn-ghost"   id="backBtn"     type="button">← Back to splash</button>
+            </div>
+
+            <div class="footer-note">
+                Continuing means you agree to a quick credit and affordability check before final approval.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider       = document.getElementById('amountSlider');
+            const amountDisplay = document.getElementById('amountDisplay');
+            const repayDisplay  = document.getElementById('repayDisplay');
+            const repayNote     = document.getElementById('repayNote');
+            const termChips     = Array.from(document.querySelectorAll('#termChips .chip'));
+            const purposeBtns   = Array.from(document.querySelectorAll('#purposeGrid .purpose-btn'));
+
+            let amount  = 500;
+            let fee     = 0.13;
+            let term    = 30;
+            let purpose = 'Business';
+
+            function fmt(n) {
+                return '$' + Number(n).toLocaleString();
+            }
+
+            function update() {
+                const repay = amount + Math.round(amount * fee);
+                amountDisplay.textContent = fmt(amount);
+                repayDisplay.textContent  = fmt(repay);
+                repayNote.textContent     = Math.round(fee * 100) + '% service fee \u00b7 ' + term + ' day plan';
+                const pct = ((amount - 100) / (2000 - 100)) * 100;
+                slider.style.background = 'linear-gradient(90deg, #4DB848 ' + pct + '%, #e0e0e0 ' + pct + '%)';
+            }
+
+            slider.addEventListener('input', () => { amount = Number(slider.value); update(); });
+
+            termChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    termChips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    term = Number(chip.dataset.term);
+                    fee  = Number(chip.dataset.fee);
+                    update();
+                });
+            });
+
+            purposeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    purposeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    purpose = btn.dataset.purpose;
+                });
+            });
+
+            document.getElementById('continueBtn').addEventListener('click', () => {
+                const repay = amount + Math.round(amount * fee);
+                localStorage.setItem('omariLoan', JSON.stringify({ amount, fee, term, purpose, repay }));
+                window.location.href = '2.html';
+            });
+
+            document.getElementById('backBtn').addEventListener('click', () => {
+                window.location.href = 'splash.html';
+            });
+
+            update();
+        });
+    </script>
+</body>
+</html>

